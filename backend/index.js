@@ -11,8 +11,9 @@ const { User } = require("./models/User");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const { isLoggedIn, isLoggedOut } = require("./middleware");
+const { router } = require("./router");
 dotenv.config();
+const { Client } = require("podcast-api");
 
 // mongo connection
 mongoose.connect(process.env.MONGO_DB_CONNECT, {
@@ -79,97 +80,7 @@ passport.use(
   })
 );
 
-// routes
-app.get("/", isLoggedIn, (req, res) => {
-  res.render("index", {
-    title: "Home",
-  });
-});
-
-app.get("/login", isLoggedOut, (req, res) => {
-  const response = {
-    title: "Login",
-    error: req.query.error,
-  };
-  res.render("login", response);
-});
-
-app.post(
-  "/login",
-  passport.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/login?error=true",
-  })
-);
-
-app.get("/logout", (req, res) => {
-  req.logout();
-  res.redirect("/");
-});
-
-app.get("/signup", (req, res) => {
-  res.render("signup");
-});
-
-app.post("/signup", async (req, res) => {
-  const exists = await User.exists({ username: req.body.username });
-
-  if (exists) {
-    console.log("exists");
-    res.redirect("/");
-    return;
-  }
-
-  bcrypt.genSalt(10, (err, salt) => {
-    if (err) {
-      return next(err);
-    }
-    bcrypt.hash(req.body.password, salt, (err, hash) => {
-      if (err) {
-        return next(err);
-      }
-
-      const newAdmin = new User({
-        username: req.body.username,
-        password: hash,
-      });
-
-      newAdmin.save();
-      console.log(newAdmin);
-
-      res.redirect("/login");
-    });
-  });
-});
-
-// setup our admin user
-// app.get("/setup", async (req, res) => {
-//   const exists = await User.exists({ username: "admin" });
-
-//   if (exists) {
-//     console.log("exists");
-//     res.redirect("/login");
-//     return;
-//   }
-
-//   bcrypt.genSalt(10, (err, salt) => {
-//     if (err) {
-//       return next(err);
-//     }
-//     bcrypt.hash("pass", salt, (err, hash) => {
-//       if (err) {
-//         return next(err);
-//       }
-
-//       const newAdmin = new User({ username: "admin", password: hash });
-
-//       newAdmin.save();
-//       console.log(newAdmin);
-
-//       res.redirect("/login");
-//     });
-//   });
-// });
+router(app, passport, Client);
 
 app.listen(port, () => {
   console.log(`Listening on port: ${port}`);
