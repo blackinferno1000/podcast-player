@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 
 // router
 const router = (app, passport, api) => {
-  const client = api({ apiKey: null });
+  const client = api({ apiKey: process.env.LISTEN_API_KEY || null });
 
   app.get("/", isLoggedIn, (req, res) => {
     res.render("index", {
