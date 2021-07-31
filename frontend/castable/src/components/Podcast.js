@@ -1,7 +1,7 @@
 export default function Podcast() {
   return (
     <section>
-      <div className="container"></div>
+      <div className="container">podcast</div>
     </section>
   );
 }

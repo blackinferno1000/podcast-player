@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function Navbar() {
+export default function Navbar(props) {
   return (
     <nav>
       <div className="container pb-3">
@@ -18,6 +18,7 @@ export default function Navbar() {
             </Link>
           </div>
         </div>
+        {props.children}
       </div>
     </nav>
   );

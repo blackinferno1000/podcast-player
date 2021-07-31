@@ -8,18 +8,19 @@ function App() {
   return (
     <main className="App">
       <Router>
-        <Navbar />
-        <Switch>
-          <Route path="/">
-            <Home />
-          </Route>
-          <Route path="/podcast">
-            <Podcast />
-          </Route>
-          <Route path="/profile">
-            <Profile />
-          </Route>
-        </Switch>
+        <Navbar>
+          <Switch>
+            <Route path="/" exact>
+              <Home />
+            </Route>
+            <Route path="/profile">
+              <Profile />
+            </Route>
+            <Route path="/:id">
+              <Podcast />
+            </Route>
+          </Switch>
+        </Navbar>
       </Router>
     </main>
   );

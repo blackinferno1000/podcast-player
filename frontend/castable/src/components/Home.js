@@ -9,25 +9,47 @@ export default function Home() {
 
   const getGenres = () => {
     let checked = [];
-    let genres = "";
+    let genreList = "";
     document.querySelectorAll("input[type='checkbox']").forEach((box) => {
       if (box.checked) checked.push(box);
     });
     checked.forEach((genre) => {
-      genres += `${genre.value},`;
+      genreList += `${genre.value},`;
     });
-    genres.slice(0, -1);
-    setGenres(genres);
-    console.log(genres);
+    genreList.slice(0, -1);
+    setGenres(genreList);
+    // console.log(genres);
   };
 
-  useEffect(() => {}, []);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    fetch("/api/search")
+      .then((res) => res.json())
+      .then((data) => {
+        setResults(data.results);
+      });
+    setLoading(false);
+    // console.log(results);
+  };
+
+  // const setPodcast = (props) => {
+  //   setCurrentPodcast(props.id);
+  // };
+
+  // useEffect(() => {
+  // }, [loading]);
   return (
     <main>
       <div className="container">
         <div className="row align-items-center justify-content-center p-2">
           <div className="col-10">
-            <form action="/api/search" method="GET">
+            <form
+              // onSubmit={handleSubmit}
+              action="http://localhost:5000/api/search"
+              method="GET"
+              className="mb-2"
+            >
               <div className="row justify-content-center p-2">
                 <div className="form-floating mb-3 col-10">
                   <input
@@ -41,6 +63,7 @@ export default function Home() {
                 <button
                   type="submit"
                   onMouseEnter={getGenres}
+                  onClick={handleSubmit}
                   className="btn btn-primary col-2 mb-3"
                 >
                   Search
@@ -92,29 +115,25 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              {loading &&
-                ((
-                  <div class="spinner-border" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                  </div>
-                ) || (
-                  <div className="row cards">
-                    <div class="card" style="width: 18rem;">
-                      <img src="..." class="card-img-top" alt="..."></img>
-                      <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">
-                          Some quick example text to build on the card title and
-                          make up the bulk of the card's content.
-                        </p>
-                        <a href="#" class="btn btn-primary">
-                          Go somewhere
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                ))}
             </form>
+            <section className="row">
+              {!loading &&
+                results.map((result) => (
+                  <ResultCard
+                    src={result.thumbnail}
+                    key={result.id}
+                    id={result.id}
+                    title={result.title_original}
+                    description={result.description_original}
+                    // function={setPodcast(result.id)}
+                  />
+                ))}
+              {loading && (
+                <div className="spinner-border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )}
+            </section>
           </div>
         </div>
       </div>
@@ -134,6 +153,28 @@ function Checkbox(props) {
       <label className="form-check-label" htmlFor={props.name}>
         {props.name}
       </label>
+    </div>
+  );
+}
+
+function ResultCard(props) {
+  const [id, setId] = useState(props.id);
+  return (
+    <div className="col cards">
+      <div className="card" style={{ width: "18rem" }}>
+        <img src={props.thumbnail} className="card-img-top" alt="..."></img>
+        <div className="card-body">
+          <h5 className="card-title">{props.title}</h5>
+          <p className="card-text">{props.description}</p>
+          <Link
+            to={props.title}
+            onClick={props.function}
+            className="btn btn-primary"
+          >
+            Go to podcast
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }
