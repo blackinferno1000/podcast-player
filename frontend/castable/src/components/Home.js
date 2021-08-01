@@ -30,7 +30,7 @@ export default function Home() {
         setResults(data.results);
       });
     setLoading(false);
-    // console.log(results);
+    console.log(results);
   };
 
   // const setPodcast = (props) => {
@@ -120,7 +120,7 @@ export default function Home() {
               {!loading &&
                 results.map((result) => (
                   <ResultCard
-                    src={result.thumbnail}
+                    thumbnail={result.thumbnail}
                     key={result.id}
                     id={result.id}
                     title={result.title_original}
@@ -160,12 +160,17 @@ function Checkbox(props) {
 function ResultCard(props) {
   const [id, setId] = useState(props.id);
   return (
-    <div className="col cards">
-      <div className="card" style={{ width: "18rem" }}>
-        <img src={props.thumbnail} className="card-img-top" alt="..."></img>
+    <div className="col cards p-2">
+      <div className="card resultCard" style={{ width: "18rem" }}>
+        <img src={props.thumbnail} className="card-img-top" alt="..." />
         <div className="card-body">
           <h5 className="card-title">{props.title}</h5>
-          <p className="card-text">{props.description}</p>
+          <textarea
+            style={{ height: "15rem" }}
+            className="card-text"
+            value={props.description}
+            readOnly
+          />
           <Link
             to={props.title}
             onClick={props.function}
