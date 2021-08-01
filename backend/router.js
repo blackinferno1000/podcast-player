@@ -65,13 +65,13 @@ const router = (app, passport, api) => {
   app.get("/api/search", (req, res) => {
     client
       .search({
-        q: req.body.search,
+        q: req.query.search,
         sort_by_date: 0,
         type: "episode",
-        offset: req.body.offset,
+        offset: req.query.offset,
         len_min: 10,
         len_max: 30,
-        genre_ids: req.body.genres,
+        genre_ids: req.query.genres,
         published_before: 1580172454000,
         published_after: 0,
         only_in: "title,description",
@@ -80,7 +80,7 @@ const router = (app, passport, api) => {
       })
       .then((response) => {
         // Get response json data here
-        // console.log(response.data);
+        console.log(response.data);
         res.json(response.data);
       })
       .catch((error) => {
@@ -91,7 +91,7 @@ const router = (app, passport, api) => {
   app.get("/api/best_podcasts", (req, res) => {
     client
       .fetchBestPodcasts({
-        genre_id: req.body.genres,
+        genre_id: req.query.genres,
         page: 2,
         region: "us",
         safe_mode: 0,
@@ -108,7 +108,7 @@ const router = (app, passport, api) => {
   app.get("/api/get_podcast", (req, res) => {
     client
       .fetchPodcastById({
-        id: req.body.podcast,
+        id: req.query.podcast,
         next_episode_pub_date: 1479154463000,
         sort: "recent_first",
       })
@@ -124,7 +124,7 @@ const router = (app, passport, api) => {
   app.get("/api/get_episode", (req, res) => {
     client
       .fetchEpisodeById({
-        id: req.body.episode,
+        id: req.query.episode,
         show_transcript: 1,
       })
       .then((response) => {
@@ -151,7 +151,7 @@ const router = (app, passport, api) => {
   app.get("/api/get_podcast_rec", (req, res) => {
     client
       .fetchRecommendationsForPodcast({
-        id: req.body.podcast,
+        id: req.query.podcast,
         safe_mode: 0,
       })
       .then((response) => {
@@ -166,7 +166,7 @@ const router = (app, passport, api) => {
   app.get("/api/get_episode_rec", (req, res) => {
     client
       .fetchRecommendationsForEpisode({
-        id: req.body.episode,
+        id: req.query.episode,
         safe_mode: 0,
       })
       .then((response) => {

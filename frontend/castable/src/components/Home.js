@@ -1,10 +1,13 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState([]);
   const [genres, setGenres] = useState("");
+  const [search, setSearch] = useState("");
+  const [offset, setOffset] = useState(0);
+  const [nextOffset, setNextOffset] = useState(0);
   const [currentPodcast, setCurrentPodcast] = useState({});
 
   const getGenres = () => {
@@ -20,32 +23,35 @@ export default function Home() {
     setGenres(genreList);
     // console.log(genres);
   };
+  const handleSearch = () => {
+    setSearch(document.querySelector("input[type='text']").value);
+    // console.log(search);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    fetch("/api/search")
+    fetch(`/api/search?search=${search}&genres=${genres}&offset=${offset}`)
       .then((res) => res.json())
       .then((data) => {
         setResults(data.results);
+        setNextOffset(data["next_offset"]);
       });
     setLoading(false);
-    console.log(results);
+    // console.log(results);
   };
 
-  // const setPodcast = (props) => {
-  //   setCurrentPodcast(props.id);
-  // };
+  const setPodcast = (props) => {
+    setCurrentPodcast(props.id);
+  };
 
-  // useEffect(() => {
-  // }, [loading]);
   return (
     <main>
       <div className="container">
         <div className="row align-items-center justify-content-center p-2">
           <div className="col-10">
             <form
-              // onSubmit={handleSubmit}
+              onSubmit={handleSubmit}
               action="http://localhost:5000/api/search"
               method="GET"
               className="mb-2"
@@ -55,15 +61,16 @@ export default function Home() {
                   <input
                     type="text"
                     className="form-control"
-                    id="floatingInput"
+                    id="search"
                     placeholder="Search for a podcast..."
+                    onChange={handleSearch}
                   ></input>
-                  <label htmlFor="floatingInput">Search for a podcast...</label>
+                  <label htmlFor="search">Search for a podcast...</label>
                 </div>
                 <button
                   type="submit"
                   onMouseEnter={getGenres}
-                  onClick={handleSubmit}
+                  // onClick={handleSubmit}
                   className="btn btn-primary col-2 mb-3"
                 >
                   Search
@@ -125,9 +132,44 @@ export default function Home() {
                     id={result.id}
                     title={result.title_original}
                     description={result.description_original}
-                    // function={setPodcast(result.id)}
+                    function={setPodcast.bind(result.id)}
                   />
                 ))}
+              {!loading && (
+                <div>
+                  <nav aria-label="Page navigation example">
+                    <ul className="pagination">
+                      <li className="page-item">
+                        <a
+                          className="page-link"
+                          onClick={(e) => {
+                            if (offset != 0) {
+                              setOffset(offset - 1);
+                            }
+                            handleSubmit(e);
+                          }}
+                          href="#"
+                        >
+                          Previous
+                        </a>
+                      </li>
+                      <li className="page-item">
+                        <a
+                          className="page-link"
+                          onClick={(e) => {
+                            setOffset(offset + nextOffset);
+                            console.log(offset);
+                            handleSubmit(e);
+                          }}
+                          href="#"
+                        >
+                          Next
+                        </a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+              )}
               {loading && (
                 <div className="spinner-border" role="status">
                   <span className="visually-hidden">Loading...</span>
@@ -172,7 +214,7 @@ function ResultCard(props) {
             readOnly
           />
           <Link
-            to={props.title}
+            to={props.id}
             onClick={props.function}
             className="btn btn-primary"
           >
