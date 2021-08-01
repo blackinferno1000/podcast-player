@@ -80,7 +80,7 @@ const router = (app, passport, api) => {
       })
       .then((response) => {
         // Get response json data here
-        console.log(response.data);
+        console.log(req.query);
         res.json(response.data);
       })
       .catch((error) => {
@@ -109,12 +109,13 @@ const router = (app, passport, api) => {
     client
       .fetchPodcastById({
         id: req.query.podcast,
-        next_episode_pub_date: 1479154463000,
+        // next_episode_pub_date: 1479154463000,
         sort: "recent_first",
       })
       .then((response) => {
         // Get response json data here
         console.log(response.data);
+        // console.log(req.query);
         res.json(response.data);
       })
       .catch((error) => {

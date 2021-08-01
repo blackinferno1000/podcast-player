@@ -135,17 +135,18 @@ export default function Home() {
                     function={setPodcast.bind(result.id)}
                   />
                 ))}
-              {!loading && (
+              {results.length > 0 && (
                 <div>
                   <nav aria-label="Page navigation example">
                     <ul className="pagination">
                       <li className="page-item">
                         <a
                           className="page-link"
-                          onClick={(e) => {
+                          onClick={async (e) => {
                             if (offset != 0) {
-                              setOffset(offset - 1);
+                              await setOffset(offset - 10);
                             }
+                            console.log(offset);
                             handleSubmit(e);
                           }}
                           href="#"
@@ -156,8 +157,8 @@ export default function Home() {
                       <li className="page-item">
                         <a
                           className="page-link"
-                          onClick={(e) => {
-                            setOffset(offset + nextOffset);
+                          onClick={async (e) => {
+                            await setOffset(offset + nextOffset);
                             console.log(offset);
                             handleSubmit(e);
                           }}
