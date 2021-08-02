@@ -1,40 +1,35 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-export default function Profile() {
+export default function Profile(props) {
   const [loggedIn, setLoggedIn] = useState(false);
   return (
     <section>
       <div className="container">
-        {!loggedIn && (
+        {props.signup !== "true" && (
           <div>
             <form action="/login" method="post">
-              <div>
-                <h1>Login</h1>
-              </div>
-              <div class="form-group">
-                <label for="">Username:</label>
+              <h1 className="h1">Login</h1>
+              <div className="form-floating mb-3">
                 <input
                   type="text"
-                  name="username"
-                  id="username"
-                  placeholder="Enter your username"
-                  required
-                ></input>
+                  className="form-control"
+                  id="floatingInput"
+                  placeholder="Username"
+                />
+                <label htmlFor="floatingInput">Username</label>
               </div>
-              <div class="form-group">
-                <label for="">Password:</label>
+              <div className="form-floating">
                 <input
                   type="password"
-                  name="password"
-                  id="password"
-                  placeholder="Enter your password"
-                  required
-                ></input>
+                  className="form-control"
+                  id="floatingPassword"
+                  placeholder="Password"
+                />
+                <label htmlFor="floatingPassword">Password</label>
               </div>
-              <button type="submit">Login</button>
             </form>
-            <p>Don't have an account?</p>
+            <p className="h5">Don't have an account?</p>
             <a href="/signup">Sign Up</a>
           </div>
         )}

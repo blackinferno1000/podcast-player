@@ -1,6 +1,14 @@
 import { Link } from "react-router-dom";
+import { useState, useMemo } from "react";
+import { UserContext } from "../UserContext";
 
 export default function Navbar(props) {
+  const [favorites, setFavorites] = useState([]);
+
+  const value = useMemo(
+    () => ({ favorites, setFavorites }),
+    [favorites, setFavorites]
+  );
   return (
     <nav>
       <div className="container pb-3">
@@ -18,7 +26,9 @@ export default function Navbar(props) {
             </Link>
           </div>
         </div>
-        {props.children}
+        <UserContext.Provider value={value}>
+          {props.children}
+        </UserContext.Provider>
       </div>
     </nav>
   );

@@ -14,7 +14,10 @@ function App() {
               <Home />
             </Route>
             <Route path="/profile">
-              <Profile />
+              <Profile signup="false" />
+            </Route>
+            <Route path="/signup">
+              <Profile signup="true" />
             </Route>
             <Route path="/:id">
               <Podcast />

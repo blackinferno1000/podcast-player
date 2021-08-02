@@ -1,14 +1,16 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { UserContext } from "../UserContext";
 
-export default function Home() {
+export default function Home(props) {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState([]);
   const [genres, setGenres] = useState("");
   const [search, setSearch] = useState("");
   const [offset, setOffset] = useState(0);
   const [nextOffset, setNextOffset] = useState(0);
-  const [currentPodcast, setCurrentPodcast] = useState({});
+
+  const { favorites, setFavorites } = useContext(UserContext);
 
   const getGenres = () => {
     let checked = [];
@@ -31,6 +33,9 @@ export default function Home() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
+    // document.querySelectorAll(".cards").forEach((card) => {
+    //   card.remove();
+    // });
     fetch(`/api/search?search=${search}&genres=${genres}&offset=${offset}`)
       .then((res) => res.json())
       .then((data) => {
@@ -41,8 +46,24 @@ export default function Home() {
     // console.log(results);
   };
 
-  const setPodcast = (props) => {
-    setCurrentPodcast(props.id);
+  const favorite = (e) => {
+    if (favorites.includes(e.target.dataset.id)) {
+      setFavorites(
+        favorites.filter((id) => {
+          return id !== e.target.dataset.id;
+        })
+      );
+    } else {
+      setFavorites(favorites.push(e.target.dataset.id));
+    }
+    if (e.target.classList.contains("bi-heart")) {
+      e.target.classList.remove("bi-heart");
+      e.target.classList.add("bi-heart-fill");
+    } else {
+      e.target.classList.remove("bi-heart-fill");
+      e.target.classList.add("bi-heart");
+    }
+    console.log(favorites);
   };
 
   return (
@@ -123,8 +144,8 @@ export default function Home() {
                 </div>
               </div>
             </form>
-            <section className="row">
-              {!loading &&
+            <section className="row resultField">
+              {!loading ? (
                 results.map((result) => (
                   <ResultCard
                     thumbnail={result.thumbnail}
@@ -132,9 +153,15 @@ export default function Home() {
                     id={result.id}
                     title={result.title_original}
                     description={result.description_original}
-                    function={setPodcast.bind(result.id)}
+                    function={favorite}
+                    favorites={favorites}
                   />
-                ))}
+                ))
+              ) : (
+                <div className="spinner-border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )}
               {results.length > 0 && (
                 <div>
                   <nav aria-label="Page navigation example">
@@ -169,11 +196,6 @@ export default function Home() {
                       </li>
                     </ul>
                   </nav>
-                </div>
-              )}
-              {loading && (
-                <div className="spinner-border" role="status">
-                  <span className="visually-hidden">Loading...</span>
                 </div>
               )}
             </section>
@@ -221,6 +243,19 @@ function ResultCard(props) {
           >
             Go to podcast
           </Link>
+          {props.favorites.includes(props.id) ? (
+            <i
+              className="bi bi-heart-fill"
+              onClick={props.function}
+              data-id={props.id}
+            ></i>
+          ) : (
+            <i
+              className="bi bi-heart"
+              onClick={props.function}
+              data-id={props.id}
+            ></i>
+          )}
         </div>
       </div>
     </div>

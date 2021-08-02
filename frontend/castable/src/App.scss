@@ -15,4 +15,13 @@ body {
   .resultCard {
     height: 45rem;
   }
+
+  .bi-heart,
+  .bi-heart-fill {
+    font-size: 2rem;
+
+    &::before {
+      padding: 1rem;
+    }
+  }
 }
