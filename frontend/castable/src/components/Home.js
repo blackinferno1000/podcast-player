@@ -223,7 +223,6 @@ function Checkbox(props) {
 }
 
 function ResultCard(props) {
-  const [id, setId] = useState(props.id);
   return (
     <div className="col cards p-2">
       <div className="card resultCard" style={{ width: "18rem" }}>
@@ -243,7 +242,12 @@ function ResultCard(props) {
           >
             Go to podcast
           </Link>
-          {props.favorites.includes(props.id) ? (
+          <i
+            className="bi bi-heart"
+            onClick={props.function}
+            data-id={props.id}
+          ></i>
+          {/* {props.favorites.includes(props.id) ? (
             <i
               className="bi bi-heart-fill"
               onClick={props.function}
@@ -255,7 +259,7 @@ function ResultCard(props) {
               onClick={props.function}
               data-id={props.id}
             ></i>
-          )}
+          )} */}
         </div>
       </div>
     </div>
