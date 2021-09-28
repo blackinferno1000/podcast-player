@@ -47,14 +47,18 @@ export default function Home(props) {
   };
 
   const favorite = (e) => {
-    if (favorites.includes(e.target.dataset.id)) {
-      setFavorites(
-        favorites.filter((id) => {
-          return id !== e.target.dataset.id;
-        })
-      );
+    let value = e.target.dataset.id;
+    if (favorites.includes(value)) {
+      setFavorites((arr) => {
+        let newArr = arr.filter((id) => {
+          return id !== value;
+        });
+        return [...newArr];
+      });
     } else {
-      setFavorites(favorites.push(e.target.dataset.id));
+      setFavorites((arr) => {
+        return [...arr, value];
+      });
     }
     if (e.target.classList.contains("bi-heart")) {
       e.target.classList.remove("bi-heart");
@@ -63,7 +67,7 @@ export default function Home(props) {
       e.target.classList.remove("bi-heart-fill");
       e.target.classList.add("bi-heart");
     }
-    console.log(favorites);
+    // console.log(favorites);
   };
 
   return (
@@ -77,8 +81,8 @@ export default function Home(props) {
               method="GET"
               className="mb-2"
             >
-              <div className="row justify-content-center p-2">
-                <div className="form-floating mb-3 col-10">
+              <div className="row justify-content-center">
+                <div className="form-floating mb-3 col-sm-6 col-md-10">
                   <input
                     type="text"
                     className="form-control"
@@ -91,8 +95,7 @@ export default function Home(props) {
                 <button
                   type="submit"
                   onMouseEnter={getGenres}
-                  // onClick={handleSubmit}
-                  className="btn btn-primary col-2 mb-3"
+                  className="btn btn-primary col-sm-6 col-md-2 mb-3"
                 >
                   Search
                 </button>
@@ -208,7 +211,7 @@ export default function Home(props) {
 
 function Checkbox(props) {
   return (
-    <div className="col-4 form-check">
+    <div className=" col-sm-2 col-md-4 form-check">
       <input
         className="form-check-input"
         type="checkbox"
@@ -224,8 +227,8 @@ function Checkbox(props) {
 
 function ResultCard(props) {
   return (
-    <div className="col cards p-2">
-      <div className="card resultCard" style={{ width: "18rem" }}>
+    <div className="col-sm-1 col-md-3 cards p-1">
+      <div className="card resultCard" style={{ width: "100%" }}>
         <img src={props.thumbnail} className="card-img-top" alt="..." />
         <div className="card-body">
           <h5 className="card-title">{props.title}</h5>
@@ -247,19 +250,6 @@ function ResultCard(props) {
             onClick={props.function}
             data-id={props.id}
           ></i>
-          {/* {props.favorites.includes(props.id) ? (
-            <i
-              className="bi bi-heart-fill"
-              onClick={props.function}
-              data-id={props.id}
-            ></i>
-          ) : (
-            <i
-              className="bi bi-heart"
-              onClick={props.function}
-              data-id={props.id}
-            ></i>
-          )} */}
         </div>
       </div>
     </div>
