@@ -1,12 +1,36 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 export default function Profile(props) {
   const [loggedIn, setLoggedIn] = useState(false);
+  const usernameRef = useRef(null);
+  const passwordRef = useRef(null);
+  const handleLogin = (e) => {
+    e.preventDefault();
+    fetch(
+      `/login?username=${usernameRef.current.value}&password=${passwordRef.current.value}`,
+      { method: "POST" }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      });
+  };
+
+  const handleSignup = (e) => {
+    fetch(`/signup`, { method: "POST" })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      });
+  };
+
   return (
     <section>
       <div className="container">
-        {props.signup !== "true" && (
+        {loggedIn ? (
+          <div>Logged in</div>
+        ) : (
           <div>
             <form action="/login" method="post">
               <h1 className="h1">Login</h1>
@@ -14,10 +38,11 @@ export default function Profile(props) {
                 <input
                   type="text"
                   className="form-control"
-                  id="floatingInput"
+                  id="floatingUsername"
                   placeholder="Username"
+                  ref={usernameRef}
                 />
-                <label htmlFor="floatingInput">Username</label>
+                <label htmlFor="floatingUsername">Username</label>
               </div>
               <div className="form-floating">
                 <input
@@ -25,12 +50,24 @@ export default function Profile(props) {
                   className="form-control"
                   id="floatingPassword"
                   placeholder="Password"
+                  ref={passwordRef}
                 />
                 <label htmlFor="floatingPassword">Password</label>
               </div>
             </form>
             <p className="h5">Don't have an account?</p>
-            <a href="/signup">Sign Up</a>
+            <button
+              className="btn btn-primary col-sm-6 col-md-2 mb-3 me-2"
+              onClick={handleLogin}
+            >
+              Login
+            </button>
+            <button
+              className="btn btn-primary col-sm-6 col-md-2 mb-3"
+              onClick={handleSignup}
+            >
+              Sign Up
+            </button>
           </div>
         )}
       </div>

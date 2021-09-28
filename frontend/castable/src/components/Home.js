@@ -75,12 +75,7 @@ export default function Home(props) {
       <div className="container">
         <div className="row align-items-center justify-content-center p-2">
           <div className="col-10">
-            <form
-              onSubmit={handleSubmit}
-              action="http://localhost:5000/api/search"
-              method="GET"
-              className="mb-2"
-            >
+            <form onSubmit={handleSubmit} method="GET" className="mb-2">
               <div className="row justify-content-center">
                 <div className="form-floating mb-3 col-sm-6 col-md-10">
                   <input
